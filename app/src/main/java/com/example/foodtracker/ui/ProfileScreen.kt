@@ -23,27 +23,40 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavHostController
 import com.example.foodtracker.ui.screens.FoodState
 import com.example.foodtracker.ui.screens.FoodViewModel
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProfileScreen(
-    onNavBack: () -> Unit,
+    navController: NavHostController,
     viewModel: FoodViewModel
 ) {
+    var navJob: Job? = null
+    val scope = rememberCoroutineScope()
     val foods by viewModel.foods.collectAsStateWithLifecycle()
     Scaffold(topBar = {
         TopAppBar(title = {
             Text("Profile")
         }, navigationIcon = {
-            IconButton(onClick = onNavBack) {
+            IconButton(onClick = {
+                navJob?.cancel()
+                navJob = scope.launch {
+                    delay(200)
+                    navController.popBackStack()
+                }
+            }) {
                 Icon(imageVector = Icons.AutoMirrored.Default.ArrowBack, contentDescription = null)
             }
         })

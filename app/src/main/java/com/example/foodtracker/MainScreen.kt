@@ -52,7 +52,7 @@ fun MainScreen(
             }
         }
         composable(route = Navigation.Profile.name) {
-            ProfileScreen({navController.popBackStack()}, viewModel)
+            ProfileScreen(navController, viewModel)
         }
     }
 }
